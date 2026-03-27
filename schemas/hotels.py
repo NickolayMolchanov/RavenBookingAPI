@@ -1,6 +1,4 @@
-from typing import List
-
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict
 
 
 # Схемы комнаты
@@ -15,7 +13,7 @@ class SRoomRead(SRoomBase):
     id: int
     hotel_id: int
 
-    model_config = ConfigDict = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Схемы отеля
@@ -29,7 +27,6 @@ class SHotelCreate(SHotelBase):
 
 class SHotelRead(SHotelBase):
     id: int
-    rooms: List[SRoomRead] = []
 
-    model_config = ConfigDict(from_attributes=True)\
+    model_config = ConfigDict(from_attributes=True)
 

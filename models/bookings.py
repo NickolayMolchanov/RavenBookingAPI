@@ -1,10 +1,13 @@
 from datetime import datetime
-from typing import List
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
 
 from database import Model
 
+if TYPE_CHECKING:
+    from models.users import User
+    from models.hotels import Room
 
 class Booking(Model):
     __tablename__ = 'bookings'
@@ -16,5 +19,5 @@ class Booking(Model):
     date_to: Mapped[datetime] = mapped_column()
     status: Mapped[str] = mapped_column(default="active")
 
-    room: Mapped["Room"] = relationship(back_populates="bookings")
-    user: Mapped["User"] = relationship(back_populates="bookings")
+    room: Mapped["Room"] = relationship("Room", back_populates="bookings", init=False)
+    user: Mapped["User"] = relationship("User", back_populates="bookings", init=False)
