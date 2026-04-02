@@ -13,7 +13,7 @@ class User(Model):
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     username: Mapped[str] = mapped_column(unique=True)
     email: Mapped[str] = mapped_column(unique=True)
-    password: Mapped[str]
+    hashed_password: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow())
 
     bookings: Mapped[list["Booking"]] = relationship(

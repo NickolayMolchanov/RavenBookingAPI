@@ -23,6 +23,8 @@ app = FastAPI(
 
 from routes.user import user_router
 from routes.hotel import hotel_router
+from routes.booking import booking_router
 
 app.include_router(user_router)
 app.include_router(hotel_router)
+app.include_router(booking_router)
