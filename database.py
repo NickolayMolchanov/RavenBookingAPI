@@ -17,4 +17,4 @@ async def get_db():
         yield session
 
 
-SessionDep = Annotated[AsyncSession, Depends(get_db)]
+#SessionDep = Annotated[AsyncSession, Depends(get_db)]

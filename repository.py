@@ -13,7 +13,7 @@ from schemas.users import SUserCreate
 
 class UserRepository:
     @classmethod
-    async def add_user(cls,data:SUserCreate, session: AsyncSession):
+    async def add_user(cls, data:SUserCreate, session: AsyncSession):
         existing_email = await session.execute(select(User).where(User.email == data.email))
         if existing_email.scalars().first():
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Email already exists')
@@ -37,8 +37,15 @@ class UserRepository:
 
 
     @classmethod
-    async def get_user(cls, user_id:int, session: AsyncSession):
+    async def get_user_by_id(cls, user_id:int, session: AsyncSession):
         query = select(User).where(User.id == user_id)
+        result = await session.execute(query)
+        user = result.scalars().first()
+        return user
+
+    @classmethod
+    async def get_user_by_email(cls, user_email: str, session: AsyncSession):
+        query = select(User).where(User.email == user_email)
         result = await session.execute(query)
         user = result.scalars().first()
         return user
@@ -196,3 +203,4 @@ class BookingRepository:
         await session.delete(booking)
         await session.commit()
         return True
+
