@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+
+<section class="hero" style="background-image: url('{{ url_for('static', path='images/index-hotel-photo.jpg') }}')">
+    <div class="hero-overlay">
+        <h1>Найди идеальный отель</h1>
+        <p>Комфорт, стиль и лучшие предложения по всему миру</p>
+
+        <div class="search-box">
+            <input type="text" placeholder="Город или отель">
+            <button class="btn primary">Поиск</button>
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="card">
+        <h3>🏨 Лучшие отели</h3>
+        <p>Отобранные вручную варианты</p>
+    </div>
+
+    <div class="card">
+        <h3>💸 Выгодные цены</h3>
+        <p>Сравнение и лучшие предложения</p>
+    </div>
+
+    <div class="card">
+        <h3>⭐ Отзывы</h3>
+        <p>Реальные мнения гостей</p>
+    </div>
+</section>
+
+{% endblock %}

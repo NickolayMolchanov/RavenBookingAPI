@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}HotelRelax{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="container">
+        <div class="logo">🏨 HotelRelax</div>
+
+        <nav class="nav-links">
+            <a href="/pages/index">Главная</a>
+            <a href="/pages/hotels-list">Отели</a>
+        </nav>
+
+        <div class="auth-buttons">
+            <button class="btn login">Войти</button>
+            <button class="btn register">Регистрация</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

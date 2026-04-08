@@ -66,3 +66,4 @@ async def delete_room_by_id(room_id: int, session: AsyncSession = Depends(get_db
     if rm_room is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Room not found")
     return  rm_room
+

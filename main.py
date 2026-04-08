@@ -1,9 +1,11 @@
 from fastapi import FastAPI
-from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
 
 from database import engine, Model
 import models
+from core.templates import templates
 from sqlalchemy.orm import configure_mappers
 configure_mappers()
 
@@ -21,6 +23,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -29,11 +33,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 from routes.user import user_router
 from routes.hotel import hotel_router
 from routes.booking import booking_router
 from routes.auth import auth_router
+from routes.templates import templates_router
 app.include_router(user_router)
 app.include_router(hotel_router)
 app.include_router(booking_router)
 app.include_router(auth_router)
+app.include_router(templates_router)
+

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Отели{% endblock %}
+
+{% block content %}
+
+<div class="hotels-page">
+
+    <!-- Фильтры -->
+    <form method="get" class="filters">
+        <input type="text" name="search" placeholder="Поиск отеля..." value="{{ search or '' }}">
+
+        <select name="sort">
+            <option value="">Сортировка</option>
+            <option value="price_asc">Цена ↑</option>
+            <option value="price_desc">Цена ↓</option>
+            <option value="name">Название</option>
+        </select>
+
+        <button class="btn primary">Найти</button>
+    </form>
+
+    <!-- Список отелей -->
+    <div class="hotels-list">
+
+        {% for hotel in hotels %}
+        <a href="/hotels-list/{{ hotel.id }}" class="hotel-link">
+            <div class="hotel-card">
+
+                <img src="{{ url_for('static', path='images/hotel.jpg') }}" alt="hotel">
+
+                <div class="hotel-info">
+                    <h3>{{ hotel.name }}</h3>
+                    <p>{{ hotel.description or "Описание отсутствует" }}</p>
+
+                    <div class="hotel-bottom">
+                        <span class="price">от {{ hotel.min_price or hotel.price }} ₽</span>
+                        <span class="details">Подробнее →</span>
+                    </div>
+                </div>
+
+            </div>
+        </a>
+
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

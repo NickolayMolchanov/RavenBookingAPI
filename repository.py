@@ -76,6 +76,7 @@ class HotelRepository:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='This name is already exists')
         hotel = Hotel(
             name=data.name,
+            country=data.country,
             address=data.address,
             description=data.description,
         )

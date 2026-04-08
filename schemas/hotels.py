@@ -5,7 +5,6 @@ from pydantic import BaseModel, ConfigDict
 class SRoomBase(BaseModel):
     type: str | None = None
     price: float
-
 class SRoomCreate(SRoomBase):
     hotel_id: int
 
@@ -19,6 +18,7 @@ class SRoomRead(SRoomBase):
 # Схемы отеля
 class SHotelBase(BaseModel):
     name: str
+    country: str
     address: str
     description: str | None = None
 

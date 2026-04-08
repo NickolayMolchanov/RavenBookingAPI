@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ hotel.name }}{% endblock %}
+
+{% block content %}
+
+<div class="hotel-detail">
+
+    <h1>{{ hotel.name }}</h1>
+    <p>{{ hotel.description }}</p>
+
+    <img class="hotel-main-img"
+         src="{{ url_for('static', path='images/hotel.jpg') }}">
+
+    <!-- Сортировка комнат -->
+    <form method="get" class="filters">
+        <select name="sort">
+            <option value="">Сортировка комнат</option>
+            <option value="price_asc">Цена ↑</option>
+            <option value="price_desc">Цена ↓</option>
+        </select>
+        <button class="btn primary">Применить</button>
+    </form>
+
+    <!-- Комнаты -->
+    <div class="rooms-list">
+        {% for room in rooms %}
+        <div class="room-card">
+
+            <div class="room-info">
+                <h3>{{ room.type }}</h3>
+                <p>{{ room.description or "Описание отсутствует" }}</p>
+
+                <div class="room-bottom">
+                    <span class="price">{{ room.price }} ₽ / ночь</span>
+                    <button class="btn primary">Забронировать</button>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}
