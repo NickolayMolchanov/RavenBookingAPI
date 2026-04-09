@@ -1,4 +1,3 @@
-from dns.e164 import query
 from fastapi import APIRouter, Request, Depends, status, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -25,9 +24,12 @@ async def get_hotels(
     search: str | None = None,
     country: str | None = None,
     sort: str | None = None,
-    db: AsyncSession = Depends(get_db)
+    page: int = 1,
+    per_page: int = 20,
+    session: AsyncSession = Depends(get_db)
 ):
-    query = select(Hotel)
+    offset = (page - 1) * per_page
+    query = select(Hotel).offset(offset).limit(per_page)
 
     if search:
         query = query.where(Hotel.name.ilike(f"%{search}%"))
@@ -39,8 +41,13 @@ async def get_hotels(
         query = query.order_by(Hotel.name.asc())
 
 
-    result = await db.execute(query)
+    result = await session.execute(query)
     hotels = result.scalars().all()
+
+    count_result = await session.execute(select(Hotel))
+    total = len(count_result.scalars().all())
+    total_pages = (total + per_page - 1) // per_page
+
 
     return templates.TemplateResponse(
         "hotels.html",
@@ -49,6 +56,8 @@ async def get_hotels(
             "hotels": hotels,
             "search": search,
             "country": country,
+            "page": page,
+            "total_pages": total_pages,
         }
     )
 

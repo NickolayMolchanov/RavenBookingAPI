@@ -10,10 +10,15 @@
     <form method="get" class="filters">
         <input type="text" name="search" placeholder="Поиск отеля..." value="{{ search or '' }}">
 
+        <select name="country">
+            <option value="">Все страны</option>
+            <option value="Россия">Россия</option>
+            <option value="США">США</option>
+            <option value="Германия">Германия</option>
+        </select>
+
         <select name="sort">
             <option value="">Сортировка</option>
-            <option value="price_asc">Цена ↑</option>
-            <option value="price_desc">Цена ↓</option>
             <option value="name">Название</option>
         </select>
 
@@ -24,7 +29,7 @@
     <div class="hotels-list">
 
         {% for hotel in hotels %}
-        <a href="/hotels-list/{{ hotel.id }}" class="hotel-link">
+        <a href="/pages/hotels-list/{{ hotel.id }}" class="hotel-link">
             <div class="hotel-card">
 
                 <img src="{{ url_for('static', path='images/hotel.jpg') }}" alt="hotel">
@@ -43,6 +48,20 @@
         </a>
 
         {% endfor %}
+    </div>
+
+    <div class="pagination">
+
+        {% if page > 1 %}
+        <a href="?page={{ page - 1 }}">← Назад</a>
+        {% endif %}
+
+        <span>Страница {{ page }} из {{ total_pages }}</span>
+
+        {% if page < total_pages %}
+        <a href="?page={{ page + 1 }}">Вперёд →</a>
+        {% endif %}
+
     </div>
 
 </div>
