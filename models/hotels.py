@@ -15,6 +15,7 @@ class Hotel(Model):
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     name: Mapped[str]
     country: Mapped[str]
+    city: Mapped[str]
     address: Mapped[str]
     description: Mapped[str | None] = mapped_column(default=None)
 

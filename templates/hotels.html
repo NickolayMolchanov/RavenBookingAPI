@@ -1,28 +1,56 @@
 {% extends "base.html" %}
 
-{% block title %}Отели{% endblock %}
-
 {% block content %}
 
 <div class="hotels-page">
 
-    <!-- Фильтры -->
-    <form method="get" class="filters">
-        <input type="text" name="search" placeholder="Поиск отеля..." value="{{ search or '' }}">
 
-        <select name="country">
-            <option value="">Все страны</option>
-            <option value="Россия">Россия</option>
-            <option value="США">США</option>
-            <option value="Германия">Германия</option>
+    <!-- верхняя панель -->
+    <div class="top-bar">
+        <a href="/pages/index" class="back-link">← На главную</a>
+
+        <h2>
+            Отели в {{ city or "выбранном городе" }}
+        </h2>
+    </div>
+    <form method="get" class="filters">
+
+        <!-- Форма поиска -->
+        <input
+            type="text"
+            name="search"
+            placeholder="Поиск..."
+            value="{{ search or '' }}"
+        >
+
+        <select name="city">
+            <option value="">Любая локация</option>
+            {% for country, cities in countries.items() %}
+                <optgroup label="{{ country }}">
+                    {% for city in cities %}
+                        <option value="{{ city }}" {% if city == selected_city %}selected{% endif %}>
+                            {{ city }}
+                        </option>
+                    {% endfor %}
+                </optgroup>
+            {% endfor %}
         </select>
+
+<!--        <select name="sort">-->
+<!--            <option value="">Сортировка</option>-->
+<!--            <option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>-->
+<!--                Сначала дешёвые-->
+<!--            </option>-->
+<!--            <option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>-->
+<!--                Сначала дорогие-->
+<!--            </option>-->
+<!--        </select>-->
 
         <button class="btn primary">Найти</button>
     </form>
 
-    <!-- Список отелей -->
+    <!-- список -->
     <div class="hotels-list">
-
         {% for hotel in hotels %}
         <a href="/pages/hotels-list/{{ hotel.id }}" class="hotel-link">
             <div class="hotel-card">
@@ -45,20 +73,17 @@
         {% endfor %}
     </div>
 
+    <!-- пагинация -->
     <div class="pagination">
-
-        {% if page > 1 %}
-        <a href="?page={{ page - 1 }}">← Назад</a>
-        {% endif %}
-
-        <span>Страница {{ page }} из {{ total_pages }}</span>
-
-        {% if page < total_pages %}
-        <a href="?page={{ page + 1 }}">Вперёд →</a>
-        {% endif %}
-
+        {% for p in range(1, total_pages + 1) %}
+            <a href="?page={{ p }}&search={{ search }}&country={{ selected_country }}">
+                {{ p }}
+            </a>
+        {% endfor %}
     </div>
 
 </div>
 
 {% endblock %}
+
+

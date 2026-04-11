@@ -19,6 +19,7 @@ class SRoomRead(SRoomBase):
 class SHotelBase(BaseModel):
     name: str
     country: str
+    city: str
     address: str
     description: str | None = None
 

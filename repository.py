@@ -77,6 +77,7 @@ class HotelRepository:
         hotel = Hotel(
             name=data.name,
             country=data.country,
+            city=data.city,
             address=data.address,
             description=data.description,
         )
