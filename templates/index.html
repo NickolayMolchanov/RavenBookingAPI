@@ -14,16 +14,14 @@
             placeholder="Куда поедем?"
         >
 
-        <select name="location">
+        <select name="city">
 
             <option value="">Любая локация</option>
 
             {% for country, cities in countries.items() %}
                 <optgroup label="{{ country }}">
                     {% for city in cities %}
-                        <option value="{{ city }}">
-                            {{ city }}
-                        </option>
+                        <option value="{{ city }}">{{ city }}</option>
                     {% endfor %}
                 </optgroup>
             {% endfor %}

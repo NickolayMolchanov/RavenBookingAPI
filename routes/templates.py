@@ -1,12 +1,14 @@
-from fastapi import APIRouter, Request, Depends, status, HTTPException, Query
+from fastapi import APIRouter, Request, Depends, status, HTTPException, Query, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import select, or_, distinct, func
+from sqlalchemy import select, or_, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from collections import defaultdict
+from starlette.responses import RedirectResponse
 
+from core.security import verify_password, create_access_token
 from database import get_db
-from models import Hotel, Room
+from models import Hotel, Room, User
 
 
 templates_router = APIRouter(prefix="/pages",tags=["templates"])
@@ -128,13 +130,6 @@ async def hotels_search(
         stmt = stmt.where(*filters)
         count_stmt = count_stmt.where(*filters)
 
-    # if sort == "price_asc":
-    #     stmt = stmt.order_by(Hotel.min_price.asc())
-    # elif sort == "price_desc":
-    #     stmt = stmt.order_by(Hotel.min_price.desc())
-    # elif sort == "name":
-    #     stmt = stmt.order_by(Hotel.name.asc())
-
     total = (await session.execute(count_stmt)).scalar()
     total_pages = (total + per_page - 1) // per_page
 
@@ -156,3 +151,79 @@ async def hotels_search(
             "total_pages": total_pages,
         }
     )
+
+@templates_router.get("/register")
+async def register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
+
+@templates_router.get("/login")
+async def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@templates_router.post("/register", response_class=HTMLResponse)
+async def register(
+        request: Request,
+        username: str = Form(...),
+        email: str = Form(...),
+        password: str = Form(...),
+        password2: str = Form(...),
+        session: AsyncSession = Depends(get_db),
+):
+    if password != password2:
+        return templates.TemplateResponse(
+            "register.html",
+            {"request": request, "error": "Пароли не совпадают", "email": email}
+        )
+
+    existing = await session.execute(
+        select(User).where(User.email == email)
+    )
+
+    if existing.scalar_one_or_none():
+        return templates.TemplateResponse(
+            "register.html",
+            {"request": request, "error": "Пользователь с таким Email уже существует", "email": email}
+        )
+
+    user = User(
+        username=username,
+        email=email,
+        hashed_password=password,
+    )
+
+    session.add(user)
+    await session.commit()
+
+    return RedirectResponse("/pages/login", status_code=status.HTTP_303_SEE_OTHER)
+
+@templates_router.post("/login", response_class=HTMLResponse)
+async def login(
+        request: Request,
+        email: str = Form(...),
+        password: str = Form(...),
+        session: AsyncSession = Depends(get_db),
+):
+    result = await session.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+
+    if not user or not verify_password(password, user.hashed_password):
+        return templates.TemplateResponse(
+            "login.html",
+            {
+                "request": request,
+                "error": "Неверный пароль или почтовый ящик",
+                "email": email,
+
+            }
+        )
+
+    token = create_access_token({"sub": str(user.id)})
+
+    response = RedirectResponse("/pages/index", status_code=status.HTTP_303_SEE_OTHER)
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+    )
+
+    return response
