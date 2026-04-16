@@ -6,7 +6,7 @@ from faker import Faker
 
 from database import engine, Model
 import models
-from core.templates import templates
+from core.middleware import AuthMiddleware
 from sqlalchemy.orm import configure_mappers
 configure_mappers()
 
@@ -34,6 +34,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(AuthMiddleware)
 
 from routes.user import user_router
 from routes.hotel import hotel_router

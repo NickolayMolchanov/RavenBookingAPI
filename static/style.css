@@ -378,3 +378,86 @@ body {
     border-radius: 8px;
     font-size: 14px;
 }
+
+.partner-page {
+    max-width: 900px;
+    margin: auto;
+}
+
+/* вкладки */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: none;
+    background: #e5e7eb;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background: #2563eb;
+    color: white;
+}
+
+/* контент */
+.tab-content {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* панели */
+.tab-panel {
+    display: none;
+    animation: fade 0.3s ease;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+@keyframes fade {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* форма */
+.form input,
+.form textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+/* комнаты */
+.room-block {
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* карточки */
+.hotel-card {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: black;
+    transition: 0.2s;
+}
+
+.hotel-card:hover {
+    background: #f4f4f9;
+}

@@ -21,10 +21,21 @@ class UserRepository:
         if existing_username.scalars().first():
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Username already taken')
 
+        result = await session.execute(
+            select(User).where(User.role.in_(["admin", "moderator"]))
+        )
+        existing_admin = result.first()
+
+        role = "user"
+
+        if not existing_admin:
+            role = "admin"
+
         user = User(
             username = data.username,
             email = data.email,
             hashed_password = get_password_hash(data.password),
+            role = role
         )
         session.add(user)
         try:

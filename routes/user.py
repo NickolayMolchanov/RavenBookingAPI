@@ -18,8 +18,8 @@ async def add_user(user: SUserCreate, session: AsyncSession = Depends(get_db)):
     return SUserRead.from_orm(new_user)
 
 @user_router.get("/{user_id}", status_code=status.HTTP_200_OK)
-async def get_user(user_id: int, session: AsyncSession = Depends(get_db)):
-    db_user = await UserRepository.get_user(user_id, session)
+async def get_user_by_id(user_id: int, session: AsyncSession = Depends(get_db)):
+    db_user = await UserRepository.get_user_by_id(user_id, session)
     if not db_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User with this ID not found")
     return db_user

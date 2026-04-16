@@ -8,11 +8,17 @@ from starlette.responses import RedirectResponse
 
 from core.security import verify_password, create_access_token
 from database import get_db
+from dependencies import get_current_user
 from models import Hotel, Room, User
 
 
 templates_router = APIRouter(prefix="/pages",tags=["templates"])
 templates = Jinja2Templates(directory="templates")
+
+def inject_user(request: Request):
+    return {"user": getattr(request.state, "user", None)}
+
+templates.env.globals["get_user"] = inject_user
 
 @templates_router.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -160,6 +166,12 @@ async def register_page(request: Request):
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
+@templates_router.get("/logout")
+async def logout():
+    response = RedirectResponse("/pages/index", status_code=status.HTTP_303_SEE_OTHER)
+    response.delete_cookie("access_token")
+    return response
+
 @templates_router.post("/register", response_class=HTMLResponse)
 async def register(
         request: Request,
@@ -185,10 +197,20 @@ async def register(
             {"request": request, "error": "Пользователь с таким Email уже существует", "email": email}
         )
 
+    result = await session.execute(
+        select(User).where(User.role.in_(["admin", "moderator"]))
+    )
+    existing_admin = result.first()
+
+    role = "user"
+    if not existing_admin:
+        role = "admin"
+
     user = User(
         username=username,
         email=email,
         hashed_password=password,
+        role = role
     )
 
     session.add(user)
@@ -227,3 +249,22 @@ async def login(
     )
 
     return response
+
+@templates_router.get("/partner", response_class=HTMLResponse)
+async def partner_page(
+    request: Request,
+    session: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    result = await session.execute(
+        select(Hotel).where(Hotel.owner_id == user.id)
+    )
+    hotels = result.scalars().all()
+
+    return templates.TemplateResponse(
+        "partner.html",
+        {
+            "request": request,
+            "hotels": hotels
+        }
+    )

@@ -14,6 +14,7 @@ class SUserRead(SUserBase):
     id: int
     created_at: datetime
     is_active: bool = True
+    role: str
 
     model_config = ConfigDict(from_attributes=True)
 

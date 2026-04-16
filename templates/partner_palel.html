@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="partner-page">
+
+    <h1>Панель партнёра</h1>
+
+    <!-- Вкладки -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('create')">
+            Создать отель
+        </button>
+        <button class="tab-btn" onclick="openTab('my-hotels')">
+            Мои отели
+        </button>
+    </div>
+
+    <!-- Контент -->
+    <div class="tab-content">
+
+        <!-- Создание -->
+        <div id="create" class="tab-panel active">
+
+            <form method="post" action="/pages/create-hotel" class="form">
+
+                <input type="text" name="name" placeholder="Название" required>
+                <input type="text" name="country" placeholder="Страна" required>
+                <input type="text" name="city" placeholder="Город" required>
+                <input type="text" name="address" placeholder="Адрес" required>
+
+                <textarea name="description" placeholder="Описание"></textarea>
+
+                <h3>Комнаты</h3>
+
+                <div id="rooms-container">
+                    <div class="room-block">
+                        <input type="text" name="room_type[]" placeholder="Тип">
+                        <input type="number" name="room_price[]" placeholder="Цена">
+                        <input type="number" name="room_count[]" placeholder="Количество">
+                    </div>
+                </div>
+
+                <button type="button" onclick="addRoom()">+ Комната</button>
+
+                <button class="btn primary">Создать</button>
+            </form>
+
+        </div>
+
+        <!-- Мои отели -->
+        <div id="my-hotels" class="tab-panel">
+
+            {% for hotel in hotels %}
+            <a href="/pages/hotels-list/{{ hotel.id }}" class="hotel-card">
+
+                <div>
+                    <h3>{{ hotel.name }}</h3>
+                    <p>{{ hotel.city }}, {{ hotel.country }}</p>
+                </div>
+
+                <span>Управлять →</span>
+
+            </a>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function openTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+    document.getElementById(tab).classList.add('active');
+
+    if (tab === 'create') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    }
+}
+
+function addRoom() {
+    const container = document.getElementById("rooms-container");
+
+    const block = document.createElement("div");
+    block.classList.add("room-block");
+
+    block.innerHTML = `
+        <input type="text" name="room_type[]" placeholder="Тип">
+        <input type="number" name="room_price[]" placeholder="Цена">
+        <input type="number" name="room_count[]" placeholder="Количество">
+    `;
+
+    container.appendChild(block);
+}
+</script>
+
+{% endblock %}

@@ -7,6 +7,7 @@
 </head>
 <body>
 
+{% set user = request.state.user %}
 <header class="navbar">
     <div class="container">
         <div class="logo">🏨 HotelRelax</div>
@@ -16,9 +17,20 @@
             <a href="/pages/hotels-list">Отели</a>
         </nav>
 
+
+
         <div class="auth-buttons">
-            <a href="/pages/login" class="btn login">Войти</a>
-            <a href="/pages/register" class="btn register">Регистрация</a>
+            {% if user %}
+                <span class="username">👤 {{ user.username }}</span>
+                <a href="/pages/logout" class="btn">Выйти</a>
+            {% else %}
+                <a href="/pages/login" class="btn">Вход</a>
+                <a href="/pages/register" class="btn primary">Регистрация</a>
+                {% if user.role in ["moderator", "admin"] %}
+                    <a href="/pages/partner" class="btn">Модерация</a>
+                {% endif %}
+            {% endif %}
+
         </div>
     </div>
 </header>
