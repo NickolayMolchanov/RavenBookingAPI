@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -29,6 +30,7 @@ class UserRepository:
             username = data.username,
             email = data.email,
             hashed_password = data.password,
+            created_at = datetime.now(),
             role = role
         )
         session.add(user)

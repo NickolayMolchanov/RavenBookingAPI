@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 
 from database import engine, Model
 
@@ -16,3 +16,7 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+from routes.user import router as user_router
+
+app.include_router(user_router)
