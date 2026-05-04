@@ -4,7 +4,6 @@ from pydantic import BaseModel, ConfigDict
 class SRoomBase(BaseModel):
     name: str
     type: str | None = None
-    description: str | None = None
     price: float
 
 class SRoomCreate(SRoomBase):

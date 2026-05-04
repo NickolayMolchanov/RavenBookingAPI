@@ -1,3 +1,5 @@
+from typing import List
+
 from database import Model
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -8,7 +10,13 @@ class Hotel(Model):
     name: Mapped[str] = mapped_column(unique=True)
     country: Mapped[str]
     city: Mapped[str]
-    adress: Mapped[str]
-    desciption: Mapped[str | None] = mapped_column(default=None)
+    address: Mapped[str]
 
-    rooms: Mapped["Room"] = relationship("Room", back_populates="hotel", cascade="all, delete-orphan")
+    rooms: Mapped[List["Room"]] = relationship(
+        "Room",
+        back_populates="hotel",
+        cascade="all, delete-orphan",
+        init=False
+    )
+
+    description: Mapped[str | None] = mapped_column(default=None)

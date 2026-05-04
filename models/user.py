@@ -12,5 +12,6 @@ class User(Model):
     email: Mapped[str] = mapped_column(unique=True)
     hashed_password: Mapped[str]
     created_at: Mapped[datetime] = mapped_column()
+
     is_active: Mapped[bool] = mapped_column(default=True)
     role: Mapped[str] = mapped_column(default="user")
