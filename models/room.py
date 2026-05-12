@@ -17,5 +17,11 @@ class Room(Model):
         init=False
     )
 
+    bookings: Mapped[list["Booking"]] = relationship(
+        "Booking",
+        back_populates="room",
+        init=False
+    )
+
     type: Mapped[int | None] = mapped_column(default=None)
     price: Mapped[float] = mapped_column(default=0.0)

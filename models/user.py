@@ -13,5 +13,11 @@ class User(Model):
     hashed_password: Mapped[str]
     created_at: Mapped[datetime] = mapped_column()
 
+    bookings: Mapped[list["Booking"]] = relationship(
+        'Booking',
+        back_populates='user',
+        init=False
+    )
+
     is_active: Mapped[bool] = mapped_column(default=True)
     role: Mapped[str] = mapped_column(default="user")
