@@ -3,6 +3,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.security import get_password_hash
 from models.user import User
 from schemas.user import SUserCreate
 
@@ -20,7 +21,7 @@ class UserRepository:
         result = await session.execute(
             select(User).where(User.role.in_(["admin", "moderator"]))
         )
-        existing_admin = result.first()
+        existing_admin = result.scalars().first()
 
         role = "user"
         if not existing_admin:
@@ -29,7 +30,7 @@ class UserRepository:
         user = User(
             username = data.username,
             email = data.email,
-            hashed_password = data.password,
+            hashed_password = get_password_hash(data.password),
             created_at = datetime.now(),
             role = role
         )
@@ -53,6 +54,13 @@ class UserRepository:
     @classmethod
     async def get_user_by_email(cls, user_email: str, session: AsyncSession):
         query = select(User).where(User.email == user_email)
+        result = await session.execute(query)
+        user = result.scalars().first()
+        return user
+
+    @classmethod
+    async def get_user_by_username(cls, user_username: str, session: AsyncSession):
+        query = select(User).where(User.username == user_username)
         result = await session.execute(query)
         user = result.scalars().first()
         return user

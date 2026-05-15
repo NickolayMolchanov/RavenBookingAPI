@@ -17,12 +17,14 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-from routes.user import router as user_router
-from routes.hotel import router as hotel_router
-from routes.room import router as room_router
-from routes.booking import router as booking_router
+from api.routes.user import router as user_router
+from api.routes.hotel import router as hotel_router
+from api.routes.room import router as room_router
+from api.routes.booking import router as booking_router
+from api.routes.auth import router as auth_router
 
 app.include_router(user_router)
 app.include_router(hotel_router)
 app.include_router(room_router)
 app.include_router(booking_router)
+app.include_router(auth_router)
